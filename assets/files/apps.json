@@ -1,0 +1,64 @@
+{
+  "apps" : [
+    {
+      "app_name" : "街头篮球",
+      "back_durations" : [
+        {
+          "description" : "每15天回归可获取丰富的奖励,回归后建议连续签到3-11天",
+          "time_duration" : 15
+        }
+      ],
+      "icon" : "https://is1-ssl.mzstatic.com/image/thumb/Purple116/v4/e4/41/cf/e441cfed-92cb-c2da-517e-7fd6fe0a5fca/AppIcon-1x_U007emarketing-0-7-0-85-220.png/230x0w.webp",
+      "scheme" : "QQ41E33879://any",
+      "searches" : "街头篮球"
+    },
+    {
+      "app_name" : "火影忍者",
+      "back_durations" : [
+        {
+          "description" : "每30天回归可获取丰富的奖励",
+          "time_duration" : 30
+        }
+      ],
+      "icon" : "https://is3-ssl.mzstatic.com/image/thumb/Purple116/v4/ec/58/06/ec580699-fa42-0975-69bf-9e73f35255d0/AppIcon-1x_U007emarketing-0-9-0-85-220.png/230x0w.webp",
+      "scheme" : "tencentlaunch1104307008://any",
+      "searches" : "火影忍者"
+    },
+    {
+      "app_name" : "霸王之业",
+      "back_durations" : [
+        {
+          "description" : "每30天回归可获取丰富的奖励",
+          "time_duration" : 30
+        }
+      ],
+      "icon" : "https://is3-ssl.mzstatic.com/image/thumb/Purple126/v4/fa/87/4e/fa874e4b-d1ad-77c5-1ff5-e76796c33ce8/AppIcon-1x_U007emarketing-0-10-0-85-220.png/230x0w.webp",
+      "scheme" : "QQ41EA2D1B://any",
+      "searches" : "霸王之业"
+    },
+    {
+      "app_name" : "穿越火线",
+      "back_durations" : [
+        {
+          "description" : "每15天回归可获取丰富的奖励",
+          "time_duration" : 15
+        }
+      ],
+      "icon" : "https://is4-ssl.mzstatic.com/image/thumb/Purple126/v4/eb/b3/a7/ebb3a797-4a98-281c-5ba5-2a695e7664d1/AppIcon-1x_U007emarketing-0-9-0-85-220.png/460x0w.webp",
+      "scheme" : "com.tencent.tmgp.cf://any",
+      "searches" : "穿越火线cf手游"
+    },
+    {
+      "app_name" : "航海王热血航线",
+      "back_durations" : [
+        {
+          "description" : "每15天回归可获取丰富的奖励",
+          "time_duration" : 15
+        }
+      ],
+      "icon" : "https://is5-ssl.mzstatic.com/image/thumb/Purple126/v4/e1/05/a5/e105a566-264f-937c-82cf-d5d3f9ed0971/AppIcon-1x_U007emarketing-0-7-0-85-220.png/230x0w.webp",
+      "scheme" : "snssdk1870://any",
+      "searches" : "航海王热血航线海贼王"
+    }
+  ]
+}
