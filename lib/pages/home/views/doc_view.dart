@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:moflu/model/json/home.dart';
 import 'package:moflu/model/sqlite/data_base.dart';
+import 'package:moflu/pages/home/object/option_manager.dart';
 import 'package:moflu/pages/home/views/file_view.dart';
 import 'package:moflu/pages/home/views/unknow_view.dart';
 import 'package:moflu/supports/styles/common_styles.dart';
@@ -13,15 +14,15 @@ typedef DocItemCallback = void Function(dynamic selectedItem);
 class DocItemView extends StatefulWidget {
   final CBDoc doc;
   final int level;
-  final bool selected;
   final DocItemCallback? onSelect;
+  final DocItemCallback? onExpend;
 
   const DocItemView({
     Key? key,
     required this.doc,
     this.level = 0,
     this.onSelect,
-    this.selected = false,
+    this.onExpend,
   }) : super(key: key);
 
   @override
@@ -29,21 +30,16 @@ class DocItemView extends StatefulWidget {
 }
 
 class _DocItemViewState extends State<DocItemView> {
-  dynamic _selectedItem;
   List? _list;
-
-  void _queryFiles() {
-    dbHelper.selectFiles(widget.doc.id).then((value) {
-      _list = value;
-      setState(() {});
-    });
-  }
 
   @override
   void didUpdateWidget(covariant DocItemView oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.selected) {
-      _queryFiles();
+    if (optionManager.isDocExpend(widget.doc.id)) {
+      dbHelper.selectFiles(widget.doc.id).then((value) {
+        _list = value;
+        setState(() {});
+      });
     } else {
       _list = null;
       setState(() {});
@@ -53,7 +49,12 @@ class _DocItemViewState extends State<DocItemView> {
   @override
   Widget build(BuildContext context) {
     List<Widget> columns = [];
-    columns.add(_buildDocItem(widget.doc, widget.selected, widget.level));
+    columns.add(_buildDocItem(
+      widget.doc,
+      optionManager.isDocExpend(widget.doc.id),
+      optionManager.isItemSelect(widget.doc.id),
+      widget.level,
+    ));
     for (int i = 0; i < (_list?.length ?? 0); i++) {
       columns.add(_buildItems(context, i));
     }
@@ -69,39 +70,39 @@ class _DocItemViewState extends State<DocItemView> {
       return DocItemView(
         doc: item,
         level: widget.level + 1,
-        selected: item == _selectedItem,
-        onSelect: _onChildSelect,
+        onSelect: _onItemSelect,
+        onExpend: _onItemExpend,
       );
     }
     if (item is CBFile) {
       return FileItemView(
         file: item,
         level: widget.level + 1,
-        selected: item == _selectedItem,
-        onSelect: _onChildSelect,
+        onSelect: _onItemSelect,
       );
     }
     return UnKnowView(object: item);
   }
 
-  Widget _buildDocItem(CBDoc doc, bool selected, int level) {
+  Widget _buildDocItem(CBDoc doc, bool expend, bool selected, int level) {
     return Container(
       color: selected ? Colors.blue[100] : Colors.transparent,
       child: Column(
         children: [
           Container(
-            margin: EdgeInsets.only(
-                left: 20.dp, right: 20.dp, top: 5.dp, bottom: 5.dp),
+            margin: EdgeInsets.all(5.dp),
             child: Row(
               children: [
                 CBSpace.h(widget.level * 20.dp),
-                Icon(
-                  selected ? Icons.remove : Icons.add_box,
-                  color: Colors.lightBlue,
+                GestureDetector(
+                  onTap: _onExpend,
+                  child: Icon(
+                    expend ? Icons.remove : Icons.add_box,
+                    color: Colors.lightBlue,
+                  ),
                 ),
                 CBSpace.h(10.dp),
                 SimpleText(doc.name),
-                CBSpace.h(10.dp),
               ],
             ),
           ),
@@ -113,14 +114,24 @@ class _DocItemViewState extends State<DocItemView> {
 
   void _onSelect() {
     if (widget.onSelect != null) {
-      widget.onSelect!(_selectedItem ?? widget.doc);
+      widget.onSelect!(widget.doc);
     }
   }
 
-  void _onChildSelect(selectedItem) {
-    _selectedItem = selectedItem;
+  void _onExpend() {
+    if (widget.onExpend != null) {
+      widget.onExpend!(widget.doc);
+    }
+  }
+
+  void _onItemSelect(selectedItem) {
     if (widget.onSelect != null) {
       widget.onSelect!(selectedItem);
     }
+  }
+
+  void _onItemExpend(selectedItem) {
+    optionManager.toggleDocExpend(selectedItem);
+    setState(() {});
   }
 }

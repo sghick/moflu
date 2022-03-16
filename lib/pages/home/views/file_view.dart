@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:moflu/model/json/home.dart';
+import 'package:moflu/pages/home/object/option_manager.dart';
 import 'package:moflu/supports/styles/common_styles.dart';
 import 'package:moflu/supports/widgets/divider.dart';
 import 'package:moflu/supports/widgets/space.dart';
@@ -10,7 +11,6 @@ typedef FileItemCallback = void Function(dynamic selectedItem);
 class FileItemView extends StatefulWidget {
   final CBFile file;
   final int level;
-  final bool selected;
   final FileItemCallback? onSelect;
 
   const FileItemView({
@@ -18,7 +18,6 @@ class FileItemView extends StatefulWidget {
     required this.file,
     this.level = 0,
     this.onSelect,
-    this.selected = false,
   }) : super(key: key);
 
   @override
@@ -37,7 +36,8 @@ class _FileItemViewState extends State<FileItemView> {
       onTap: _onSelect,
       child: Column(
         children: [
-          _buildFileItem(widget.file, widget.selected, widget.level),
+          _buildFileItem(widget.file,
+              optionManager.isItemSelect(widget.file.id), widget.level),
         ],
       ),
     );
@@ -49,8 +49,7 @@ class _FileItemViewState extends State<FileItemView> {
       child: Column(
         children: [
           Container(
-            margin: EdgeInsets.only(
-                left: 20.dp, right: 20.dp, top: 5.dp, bottom: 5.dp),
+            margin: EdgeInsets.all(5.dp),
             child: Row(
               children: [
                 CBSpace.h(level * 20.dp),

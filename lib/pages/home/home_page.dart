@@ -1,4 +1,5 @@
 import 'package:moflu/model/json/home.dart';
+import 'package:moflu/pages/home/object/option_manager.dart';
 import 'package:moflu/pages/home/views/doc_view.dart';
 import 'package:moflu/supports/widgets/dialogs/dialog_common_input_widget.dart';
 import 'package:moflu/model/sqlite/data_base.dart';
@@ -12,8 +13,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   List<CBDoc>? _list;
-  dynamic _selectedItem;
-  String? _selectedDocId;
 
   @override
   void initState() {
@@ -67,8 +66,8 @@ class _HomePageState extends State<HomePage> {
     CBDoc doc = _list![index];
     return DocItemView(
       doc: doc,
-      selected: doc == _selectedItem,
-      onSelect: _onChildSelect,
+      onSelect: _onItemSelect,
+      onExpend: _onItemExpend,
     );
   }
 
@@ -77,7 +76,7 @@ class _HomePageState extends State<HomePage> {
       hintText: '请输入文件夹名',
       autoHiddenDialog: true,
       confirmCallback: (String value) {
-        CBDoc doc = CBDoc.fromCreate(value, _selectedDocId);
+        CBDoc doc = CBDoc.fromCreate(value, optionManager.selectedDocId);
         dbHelper.insertDoc(doc).then((value) {
           _queryItems();
         });
@@ -90,7 +89,7 @@ class _HomePageState extends State<HomePage> {
       hintText: '请输入文件名',
       autoHiddenDialog: true,
       confirmCallback: (value) {
-        CBFile file = CBFile.fromCreate(value, _selectedDocId);
+        CBFile file = CBFile.fromCreate(value, optionManager.selectedDocId);
         dbHelper.insertFile(file).then((value) {
           _queryItems();
         });
@@ -98,19 +97,13 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void _onChildSelect(selectedItem) {
-    if (_selectedItem != selectedItem) {
-      _selectedItem = selectedItem;
-      if (selectedItem is CBDoc) {
-        _selectedDocId = selectedItem.id;
-      }
-      if (selectedItem is CBFile) {
-        _selectedDocId = selectedItem.inDocId;
-      }
-    } else {
-      _selectedItem = null;
-      _selectedDocId = null;
-    }
+  void _onItemSelect(selectedItem) {
+    optionManager.changeSelectedItem(selectedItem);
+    setState(() {});
+  }
+
+  void _onItemExpend(selectedItem) {
+    optionManager.toggleDocExpend(selectedItem);
     setState(() {});
   }
 }
