@@ -96,12 +96,22 @@ class _DocItemViewState extends State<DocItemView> {
                 CBSpace.h(widget.level * 20.dp),
                 GestureDetector(
                   onTap: _onExpend,
-                  child: Icon(
-                    expend ? Icons.remove : Icons.add_box,
-                    color: Colors.lightBlue,
+                  child: Row(
+                    children: [
+                      Icon(
+                        expend
+                            ? Icons.keyboard_arrow_down
+                            : Icons.keyboard_arrow_right,
+                        color: Colors.lightBlue,
+                      ),
+                    ],
                   ),
                 ),
-                CBSpace.h(10.dp),
+                Icon(
+                  Icons.work,
+                  color: Colors.lightBlue,
+                ),
+                CBSpace.h(5.dp),
                 SimpleText(doc.name),
               ],
             ),
