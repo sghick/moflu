@@ -25,9 +25,12 @@ class OptionManager {
     }
   }
 
-  void toggleDocExpend(dynamic item) {
+  void toggleDocExpend(dynamic item, {bool? expend}) {
     if (item is CBDoc) {
-      docExpend[item.id] = !isDocExpend(item.id);
+      docExpend[item.id] = expend ?? !isDocExpend(item.id);
+    }
+    if (item is String) {
+      docExpend[item] = expend ?? !isDocExpend(item);
     }
   }
 

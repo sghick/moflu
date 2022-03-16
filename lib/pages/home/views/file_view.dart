@@ -55,7 +55,7 @@ class _FileItemViewState extends State<FileItemView> {
                 CBSpace.h(level * 20.dp),
                 Icon(
                   Icons.insert_drive_file,
-                  color: Colors.lightBlue,
+                  color: Colors.green,
                 ),
                 CBSpace.h(10.dp),
                 SimpleText(file.name),

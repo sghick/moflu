@@ -36,7 +36,7 @@ class _DocItemViewState extends State<DocItemView> {
   void didUpdateWidget(covariant DocItemView oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (optionManager.isDocExpend(widget.doc.id)) {
-      dbHelper.selectFiles(widget.doc.id).then((value) {
+      dbHelper.selectAllItems(widget.doc.id).then((value) {
         _list = value;
         setState(() {});
       });

@@ -109,4 +109,17 @@ extension HomeSqlite on DBHelper {
       return list;
     });
   }
+
+  Future<List<dynamic>?> selectAllItems(String? docId) async {
+    List<CBDoc>? docs = await selectDocs(docId);
+    List<CBFile>? files = await selectFiles(docId);
+    List rtn = [];
+    if (docs != null && docs.isNotEmpty) {
+      rtn.addAll(docs);
+    }
+    if (files != null && files.isNotEmpty) {
+      rtn.addAll(files);
+    }
+    return rtn;
+  }
 }

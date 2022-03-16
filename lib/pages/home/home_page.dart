@@ -77,6 +77,8 @@ class _HomePageState extends State<HomePage> {
       autoHiddenDialog: true,
       confirmCallback: (String value) {
         CBDoc doc = CBDoc.fromCreate(value, optionManager.selectedDocId);
+        optionManager.toggleDocExpend(optionManager.selectedDocId,
+            expend: true);
         dbHelper.insertDoc(doc).then((value) {
           _queryItems();
         });
@@ -90,6 +92,8 @@ class _HomePageState extends State<HomePage> {
       autoHiddenDialog: true,
       confirmCallback: (value) {
         CBFile file = CBFile.fromCreate(value, optionManager.selectedDocId);
+        optionManager.toggleDocExpend(optionManager.selectedDocId,
+            expend: true);
         dbHelper.insertFile(file).then((value) {
           _queryItems();
         });
