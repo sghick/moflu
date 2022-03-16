@@ -17,7 +17,11 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    _queryItems();
+    docEventBus.on<DocEventItem>().listen((event) {
+      if (event.docId == null) {
+        setState(() {});
+      }
+    });
   }
 
   void _queryItems() {

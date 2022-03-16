@@ -1,3 +1,4 @@
+import 'package:event_bus/event_bus.dart';
 import 'package:moflu/model/sqlite/data_base.dart';
 
 OptionManager optionManager = OptionManager();
@@ -42,4 +43,16 @@ class OptionManager {
   bool isItemSelect(String id) {
     return selectedItemId == id;
   }
+
+  void refreshDoc(String? id) {
+    docEventBus.fire(DocEventItem(id));
+  }
+}
+
+final docEventBus = EventBus();
+
+class DocEventItem {
+  final String? docId;
+
+  DocEventItem(this.docId);
 }
