@@ -9,12 +9,17 @@ typedef FileItemCallback = void Function(dynamic selectedItem);
 
 class FileItemView extends StatefulWidget {
   final CBFile file;
+  final int level;
   final bool selected;
   final FileItemCallback? onSelect;
 
-  const FileItemView(
-      {Key? key, required this.file, this.onSelect, this.selected = false})
-      : super(key: key);
+  const FileItemView({
+    Key? key,
+    required this.file,
+    this.level = 0,
+    this.onSelect,
+    this.selected = false,
+  }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _FileItemViewState();
@@ -32,7 +37,7 @@ class _FileItemViewState extends State<FileItemView> {
       onTap: _onSelect,
       child: Column(
         children: [
-          _buildFileItem(widget.file, widget.selected, 1),
+          _buildFileItem(widget.file, widget.selected, widget.level),
         ],
       ),
     );
@@ -48,6 +53,7 @@ class _FileItemViewState extends State<FileItemView> {
                 left: 20.dp, right: 20.dp, top: 5.dp, bottom: 5.dp),
             child: Row(
               children: [
+                CBSpace.h(level * 20.dp),
                 Icon(
                   Icons.insert_drive_file,
                   color: Colors.lightBlue,

@@ -110,7 +110,7 @@ class _HomePageState extends State<HomePage> {
     } else {
       _selectedItem = null;
       _selectedDocId = null;
-      setState(() {});
     }
+    setState(() {});
   }
 }
