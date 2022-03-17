@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:moflu/model/annotation/json_annotation.dart';
 import 'package:rego/base_core/db/sqlite.dart';
+import 'package:uuid/uuid.dart';
 
 part 'home.g.dart';
 
@@ -15,20 +16,22 @@ part 'home.s.dart';
 
 @JsonModel()
 class CBDoc extends JsonConvert {
-  final String? id;
-  final String? name;
-  final String? path;
-  final List<String>? docIds;
-  final List<String>? fileIds;
+  String id;
+  String? inDocId;
+  String name;
+  String? path;
 
   static String idColumnName = 'id';
+  static String inDocIdColumnName = 'in_doc_id';
   static String nameColumnName = 'name';
   static String pathColumnName = 'path';
-  static String docIdsColumnName = 'doc_ids';
-  static String fileIdsColumnName = 'file_ids';
 
-  CBDoc(this.id, this.name, this.path, this.docIds, this.fileIds);
+  CBDoc(this.id, this.inDocId, this.name, this.path);
 
+  CBDoc.fromCreate(String name, String? inDocId)
+      : this.id = Uuid().v5(null, name),
+        this.name = name,
+        this.inDocId = inDocId;
 
   @override
   Map<String, dynamic> toJson() => _$CBDocToJson(this);
@@ -40,25 +43,49 @@ class CBDoc extends JsonConvert {
 
 @JsonModel()
 class CBFile extends JsonConvert {
-  final String? id;
-  final CBObject? object;
+  String id;
+  String? inDocId;
+  String name;
+  String? path;
 
-  CBFile(this.id, this.object);
+  CBFile(this.id, this.inDocId, this.name, this.path);
+
+  static String idColumnName = 'id';
+  static String inDocIdColumnName = 'in_doc_id';
+  static String nameColumnName = 'name';
+  static String pathColumnName = 'path';
+
+  CBFile.fromCreate(String name, String? inDocId)
+      : this.id = Uuid().v5(null, name),
+        this.name = name,
+        this.inDocId = inDocId;
 
   @override
   Map<String, dynamic> toJson() => _$CBFileToJson(this);
 
   factory CBFile.fromJson(json) => _$CBFileFromJson(json);
+
+  static CBDBMapper get dbMapper => _$CBFileDBMapper();
 }
 
 @JsonModel()
 class CBObject extends JsonConvert {
-  final String? id;
+  String id;
+  String? inFileId;
 
-  CBObject(this.id);
+  static String idColumnName = 'id';
+  static String inFileIdColumnName = 'in_file_id';
+
+  CBObject(this.id, this.inFileId);
+
+  CBObject.fromCreate(String inFileId)
+      : this.id = Uuid().v1(),
+        this.inFileId = inFileId;
 
   @override
   Map<String, dynamic> toJson() => _$CBObjectToJson(this);
 
   factory CBObject.fromJson(json) => _$CBObjectFromJson(json);
+
+  static CBDBMapper get dbMapper => _$CBObjectDBMapper();
 }
