@@ -1,5 +1,4 @@
 import 'package:rego/base_core/routes/navigators.dart';
-import 'package:moflu/supports/styles/common_styles.dart';
 import 'package:flutter/material.dart';
 
 class SplashPage extends StatefulWidget {

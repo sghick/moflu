@@ -28,5 +28,7 @@ class DBHelper extends CBSqlite {
   @override
   OnDatabaseOpenFn? get onOpen => (Database db) async {
         db.execute(CBDoc.dbMapper.sqlForCreateTable());
+        db.execute(CBFile.dbMapper.sqlForCreateTable());
+        db.execute(CBObject.dbMapper.sqlForCreateTable());
       };
 }
