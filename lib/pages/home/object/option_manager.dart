@@ -47,15 +47,16 @@ class OptionManager {
   }
 
   void changeSelectedItem(FileSystemEntity item) {
-    if (item is Directory) {
-      inDir = item;
-    }
-    if (item is File) {
-      inDir = item.parent;
-    }
-    if ((selectedItem != null) && (selectedItem!.path != item.path)) {
+    if (selectedItem?.path != item.path) {
+      if (item is Directory) {
+        inDir = item;
+      }
+      if (item is File) {
+        inDir = item.parent;
+      }
       selectedItem = item;
     } else {
+      inDir = null;
       selectedItem = null;
     }
   }

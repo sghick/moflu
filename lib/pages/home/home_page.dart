@@ -22,9 +22,10 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    docEventBus.on<DocEventItem>().listen((event) {
-      if (event.dir == null) {
-        setState(() {});
+    docEventBus.on<DocEventItem>().listen((event) async {
+      Directory rootDir = await optionManager.rootDir;
+      if (event.dir?.path == rootDir.path) {
+        _queryItems();
       }
     });
     _queryItems();
