@@ -1,58 +1,87 @@
+import 'dart:io';
+
 import 'package:event_bus/event_bus.dart';
-import 'package:moflu/model/sqlite/data_base.dart';
+import 'package:path_provider/path_provider.dart';
 
 OptionManager optionManager = OptionManager();
 
 class OptionManager {
-  String? selectedItemId;
-  String? selectedDocId;
+  FileSystemEntity? selectedItem;
+  Directory? inDir;
   Map<String, bool> docExpend = {};
 
-  void changeSelectedItem(dynamic item) {
-    String _selectedItemId = '';
-    if (item is CBDoc) {
-      selectedDocId = item.id;
-      _selectedItemId = item.id;
-    }
-    if (item is CBFile) {
-      selectedDocId = item.inDocId;
-      _selectedItemId = item.id;
-    }
+  Future<Directory> get rootDir =>
+      getApplicationDocumentsDirectory().then((value) {
+        Directory directory = Directory(value.path + '/moflu');
+        if (directory.existsSync()) {
+          return directory;
+        } else {
+          return directory.create();
+        }
+      });
 
-    if (selectedItemId != _selectedItemId) {
-      selectedItemId = _selectedItemId;
+  Future<Directory> createDir(Directory? inDir, String name) {
+    if (inDir != null) {
+      Directory dir = Directory(inDir.path + '/' + name);
+      return dir.create(recursive: true);
     } else {
-      selectedItemId = null;
+      return rootDir.then((value) => createDir(value, name));
     }
   }
 
-  void toggleDocExpend(dynamic item, {bool? expend}) {
-    if (item is CBDoc) {
-      docExpend[item.id] = expend ?? !isDocExpend(item.id);
-    }
-    if (item is String) {
-      docExpend[item] = expend ?? !isDocExpend(item);
+  Future<Directory> createDirInCurrent(String name) {
+    return createDir(inDir, name);
+  }
+
+  Future<File> createFile(Directory? inDir, String name, {String? ext}) {
+    if (inDir != null) {
+      File file = File(inDir.path + '/' + name + (ext ?? ''));
+      return file.create(recursive: true);
+    } else {
+      return rootDir.then((value) => createFile(value, name, ext: ext));
     }
   }
 
-  bool isDocExpend(String id) {
-    bool? _expend = docExpend[id];
+  Future<File> createFileInCurrent(String name, {String? ext}) {
+    return createFile(inDir, name, ext: ext);
+  }
+
+  void changeSelectedItem(FileSystemEntity item) {
+    if (item is Directory) {
+      inDir = item;
+    }
+    if (item is File) {
+      inDir = item.parent;
+    }
+    if ((selectedItem != null) && (selectedItem!.path != item.path)) {
+      selectedItem = item;
+    } else {
+      selectedItem = null;
+    }
+  }
+
+  void toggleDirExpend(Directory item, {bool? expend}) {
+    docExpend[item.path] = expend ?? !isDirExpend(item);
+  }
+
+  bool isDirExpend(Directory dir) {
+    bool? _expend = docExpend[dir.path];
     return _expend ?? false;
   }
 
-  bool isItemSelect(String id) {
-    return selectedItemId == id;
+  bool isItemSelect(FileSystemEntity item) {
+    return (selectedItem?.path ?? '') == item.path;
   }
 
-  void refreshDoc(String? id) {
-    docEventBus.fire(DocEventItem(id));
+  void refreshDir(Directory? dir) {
+    docEventBus.fire(DocEventItem(dir));
   }
 }
 
 final docEventBus = EventBus();
 
 class DocEventItem {
-  final String? docId;
+  final Directory? dir;
 
-  DocEventItem(this.docId);
+  DocEventItem(this.dir);
 }

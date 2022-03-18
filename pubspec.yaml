@@ -47,6 +47,7 @@ dependencies:
   extended_image: ^4.1.0
   flutter_slidable: ^1.2.0
   event_bus: ^2.0.0
+  path_provider: ^2.0.9
 
   rego:
     git:

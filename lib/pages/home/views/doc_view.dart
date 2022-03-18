@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:moflu/configs/routes.dart';
 import 'package:moflu/model/json/home.dart';
 import 'package:moflu/model/sqlite/data_base.dart';
 import 'package:moflu/pages/home/object/option_manager.dart';
@@ -10,19 +13,21 @@ import 'package:moflu/supports/styles/common_styles.dart';
 import 'package:moflu/supports/widgets/dialogs/dialog_common_wedgets.dart';
 import 'package:moflu/supports/widgets/divider.dart';
 import 'package:moflu/supports/widgets/space.dart';
+import 'package:moflu/supports/widgets/toast.dart';
+import 'package:rego/base_core/routes/navigators.dart';
 import 'package:rego/base_core/widgets/text_widgets.dart';
 
 typedef DocItemCallback = void Function(dynamic selectedItem);
 
 class DocItemView extends StatefulWidget {
-  final CBDoc doc;
+  final Directory dir;
   final int level;
   final DocItemCallback? onSelect;
   final DocItemCallback? onExpend;
 
   const DocItemView({
     Key? key,
-    required this.doc,
+    required this.dir,
     this.level = 0,
     this.onSelect,
     this.onExpend,
@@ -36,22 +41,19 @@ class _DocItemViewState extends State<DocItemView> {
   List? _list;
 
   void _refreshList() {
-    if (optionManager.isDocExpend(widget.doc.id)) {
-      dbHelper.selectAllItems(widget.doc.id).then((value) {
-        _list = value;
-        setState(() {});
-      });
+    if (optionManager.isDirExpend(widget.dir)) {
+      _list = widget.dir.listSync().toList();
     } else {
       _list = null;
-      setState(() {});
     }
+    setState(() {});
   }
 
   @override
   void initState() {
     super.initState();
     docEventBus.on<DocEventItem>().listen((event) {
-      if (event.docId == widget.doc.id) {
+      if ((event.dir != null) && (event.dir!.path == widget.dir.path)) {
         _refreshList();
       }
     });
@@ -66,11 +68,11 @@ class _DocItemViewState extends State<DocItemView> {
   @override
   Widget build(BuildContext context) {
     List<Widget> columns = [];
-    columns.add(_buildDocItem(
+    columns.add(_buildDirItem(
       context,
-      widget.doc,
-      optionManager.isDocExpend(widget.doc.id),
-      optionManager.isItemSelect(widget.doc.id),
+      widget.dir,
+      optionManager.isDirExpend(widget.dir),
+      optionManager.isItemSelect(widget.dir),
       widget.level,
     ));
     for (int i = 0; i < (_list?.length ?? 0); i++) {
@@ -84,15 +86,15 @@ class _DocItemViewState extends State<DocItemView> {
 
   Widget _buildItems(context, index) {
     var item = _list![index];
-    if (item is CBDoc) {
+    if (item is Directory) {
       return DocItemView(
-        doc: item,
+        dir: item,
         level: widget.level + 1,
         onSelect: _onItemSelect,
         onExpend: _onItemExpend,
       );
     }
-    if (item is CBFile) {
+    if (item is File) {
       return FileItemView(
         file: item,
         level: widget.level + 1,
@@ -102,11 +104,11 @@ class _DocItemViewState extends State<DocItemView> {
     return UnKnowView(object: item);
   }
 
-  Widget _buildDocItem(
-      BuildContext context, CBDoc doc, bool expend, bool selected, int level) {
+  Widget _buildDirItem(BuildContext context, Directory dir, bool expend,
+      bool selected, int level) {
     return _slidable(
       context,
-      doc,
+      dir,
       Container(
         color: selected ? Colors.blue[100] : Colors.transparent,
         child: Column(
@@ -134,7 +136,7 @@ class _DocItemViewState extends State<DocItemView> {
                     color: Colors.lightBlue,
                   ),
                   CBSpace.h(5.dp),
-                  SimpleText(doc.name),
+                  SimpleText(dir.path.lastPath),
                 ],
               ),
             ),
@@ -145,9 +147,9 @@ class _DocItemViewState extends State<DocItemView> {
     );
   }
 
-  Widget _slidable(BuildContext context, CBDoc doc, Widget child) {
+  Widget _slidable(BuildContext context, Directory dir, Widget child) {
     return Slidable(
-      key: Key(doc.id),
+      key: Key(dir.path),
       endActionPane: ActionPane(
         motion: ScrollMotion(),
         children: [
@@ -156,8 +158,9 @@ class _DocItemViewState extends State<DocItemView> {
               showCustomBasicDialog(
                   content: '是否删除此文件夹以及其内的所有文件',
                   confirmCallback: () {
-                    dbHelper.deleteDoc(doc.id).then((value) {
-                      optionManager.refreshDoc(doc.inDocId);
+                    widget.dir.delete(recursive: true).then((value) {
+                      cbToast(msg: '删除成功');
+                      optionManager.refreshDir(widget.dir.parent);
                     });
                   });
             },
@@ -173,13 +176,13 @@ class _DocItemViewState extends State<DocItemView> {
 
   void _onSelect() {
     if (widget.onSelect != null) {
-      widget.onSelect!(widget.doc);
+      widget.onSelect!(widget.dir);
     }
   }
 
   void _onExpend() {
     if (widget.onExpend != null) {
-      widget.onExpend!(widget.doc);
+      widget.onExpend!(widget.dir);
     }
   }
 
@@ -190,7 +193,7 @@ class _DocItemViewState extends State<DocItemView> {
   }
 
   void _onItemExpend(selectedItem) {
-    optionManager.toggleDocExpend(selectedItem);
+    optionManager.toggleDirExpend(selectedItem);
     setState(() {});
   }
 }

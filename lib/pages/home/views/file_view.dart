@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:moflu/model/json/home.dart';
@@ -12,7 +14,7 @@ import 'package:rego/base_core/widgets/text_widgets.dart';
 typedef FileItemCallback = void Function(dynamic selectedItem);
 
 class FileItemView extends StatefulWidget {
-  final CBFile file;
+  final File file;
   final int level;
   final FileItemCallback? onSelect;
 
@@ -40,14 +42,14 @@ class _FileItemViewState extends State<FileItemView> {
       child: Column(
         children: [
           _buildFileItem(context, widget.file,
-              optionManager.isItemSelect(widget.file.id), widget.level),
+              optionManager.isItemSelect(widget.file), widget.level),
         ],
       ),
     );
   }
 
   Widget _buildFileItem(
-      BuildContext context, CBFile file, bool selected, int level) {
+      BuildContext context, File file, bool selected, int level) {
     return _slidable(
       context,
       file,
@@ -65,7 +67,7 @@ class _FileItemViewState extends State<FileItemView> {
                     color: Colors.green,
                   ),
                   CBSpace.h(10.dp),
-                  SimpleText(file.name),
+                  SimpleText(file.path.lastPath),
                   CBSpace.h(10.dp),
                 ],
               ),
@@ -77,9 +79,9 @@ class _FileItemViewState extends State<FileItemView> {
     );
   }
 
-  Widget _slidable(BuildContext context, CBFile file, Widget child) {
+  Widget _slidable(BuildContext context, File file, Widget child) {
     return Slidable(
-      key: Key(file.id),
+      key: Key(file.path),
       endActionPane: ActionPane(
         motion: ScrollMotion(),
         children: [
@@ -88,8 +90,8 @@ class _FileItemViewState extends State<FileItemView> {
               showCustomBasicDialog(
                   content: '是否删除此文件',
                   confirmCallback: () {
-                    dbHelper.deleteFile(file.id).then((value) {
-                      optionManager.refreshDoc(file.inDocId);
+                    file.delete().then((value) {
+                      optionManager.refreshDir(file.parent);
                     });
                   });
             },

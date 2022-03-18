@@ -14,6 +14,14 @@ extension StringCommonExt on String {
   String get json {
     return "assets/json/${_appendSuffix(this, 'json')}";
   }
+
+  List<String> get pathComponents {
+    return this.split('/');
+  }
+
+  String get lastPath {
+    return pathComponents.last;
+  }
 }
 
 String _appendSuffix(String fileName, String suffix) {

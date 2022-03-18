@@ -1,10 +1,15 @@
+import 'dart:io';
+
 import 'package:moflu/model/json/home.dart';
 import 'package:moflu/pages/home/object/option_manager.dart';
 import 'package:moflu/pages/home/views/doc_view.dart';
+import 'package:moflu/pages/home/views/file_view.dart';
+import 'package:moflu/pages/home/views/unknow_view.dart';
 import 'package:moflu/supports/widgets/dialogs/dialog_common_input_widget.dart';
 import 'package:moflu/model/sqlite/data_base.dart';
 import 'package:flutter/material.dart';
 import 'package:moflu/supports/widgets/scaffod.dart';
+import 'package:path_provider/path_provider.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -12,21 +17,22 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<CBDoc>? _list;
+  List<FileSystemEntity>? _list;
 
   @override
   void initState() {
     super.initState();
     docEventBus.on<DocEventItem>().listen((event) {
-      if (event.docId == null) {
+      if (event.dir == null) {
         setState(() {});
       }
     });
+    _queryItems();
   }
 
   void _queryItems() {
-    dbHelper.selectDocs(null).then((value) {
-      _list = value;
+    optionManager.rootDir.then((value) {
+      _list = value.listSync().toList();
       setState(() {});
     });
   }
@@ -67,25 +73,31 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildItem(BuildContext context, int index) {
-    CBDoc doc = _list![index];
-    return DocItemView(
-      doc: doc,
-      onSelect: _onItemSelect,
-      onExpend: _onItemExpend,
-    );
+    FileSystemEntity item = _list![index];
+    if (item is Directory) {
+      return DocItemView(
+        dir: item,
+        onSelect: _onItemSelect,
+        onExpend: _onItemExpend,
+      );
+    }
+    if (item is File) {
+      return FileItemView(
+        file: item,
+        onSelect: _onItemSelect,
+      );
+    }
+    return UnKnowView(object: item);
   }
 
   void _onCreateDoc() {
     showCustomInputBasicDialog(
       hintText: '请输入文件夹名',
       autoHiddenDialog: true,
-      confirmCallback: (String value) {
-        CBDoc doc = CBDoc.fromCreate(value, optionManager.selectedDocId);
-        optionManager.toggleDocExpend(optionManager.selectedDocId,
-            expend: true);
-        dbHelper.insertDoc(doc).then((value) {
-          _queryItems();
-        });
+      confirmCallback: (String value) async {
+        Directory dir = await optionManager.createDirInCurrent(value);
+        optionManager.toggleDirExpend(dir.parent, expend: true);
+        _queryItems();
       },
     );
   }
@@ -94,13 +106,10 @@ class _HomePageState extends State<HomePage> {
     showCustomInputBasicDialog(
       hintText: '请输入文件名',
       autoHiddenDialog: true,
-      confirmCallback: (value) {
-        CBFile file = CBFile.fromCreate(value, optionManager.selectedDocId);
-        optionManager.toggleDocExpend(optionManager.selectedDocId,
-            expend: true);
-        dbHelper.insertFile(file).then((value) {
-          _queryItems();
-        });
+      confirmCallback: (value) async {
+        File file = await optionManager.createFileInCurrent(value);
+        optionManager.toggleDirExpend(file.parent, expend: true);
+        _queryItems();
       },
     );
   }
@@ -111,7 +120,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _onItemExpend(selectedItem) {
-    optionManager.toggleDocExpend(selectedItem);
+    optionManager.toggleDirExpend(selectedItem);
     setState(() {});
   }
 }
