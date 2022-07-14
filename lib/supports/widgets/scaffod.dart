@@ -1,3 +1,5 @@
+import 'package:flutter/services.dart';
+import 'package:moflu/supports/widgets/space.dart';
 import 'package:rego/base_core/routes/navigators.dart';
 import 'package:moflu/supports/styles/common_styles.dart';
 import 'package:moflu/supports/widgets/divider.dart';
@@ -19,24 +21,32 @@ class CBTitleBar extends StatelessWidget {
   final Widget? title;
   final List<Widget>? leading;
   final List<Widget>? actions;
+  final EdgeInsets? padding;
   final double iconMargin;
 
-  const CBTitleBar(
-      {Key? key, this.title, this.leading, this.actions, this.iconMargin = 0})
-      : super(key: key);
+  const CBTitleBar({
+    Key? key,
+    this.title,
+    this.leading,
+    this.actions,
+    this.padding,
+    this.iconMargin = 0,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.max,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: <Widget>[
-        Expanded(child: _buildWidget(true)),
-        title!,
-        Expanded(
-          child: _buildWidget(false),
-        ),
-      ],
+    return Container(
+      padding:
+          EdgeInsets.only(top: padding?.top ?? 0, bottom: padding?.bottom ?? 0),
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Expanded(child: _buildWidget(true)),
+          title!,
+          Expanded(child: _buildWidget(false)),
+        ],
+      ),
     );
   }
 
@@ -44,18 +54,20 @@ class CBTitleBar extends StatelessWidget {
     List<Widget> originalWidgets = (isLeading ? leading : actions) ?? [];
     List<Widget> wList = [];
     for (var widget in originalWidgets) {
-      if (isLeading) {
+      if (isLeading && (wList.length > 0)) {
         wList.add(Container(
           width: iconMargin,
         ));
       }
       wList.add(widget);
-      if (!isLeading) {
+      if (!isLeading && (wList.length < originalWidgets.length)) {
         wList.add((Container(
           width: iconMargin,
         )));
       }
     }
+    isLeading ? wList.insert(0, SizedBox(width: padding?.left)) : null;
+    isLeading ? null : wList.add(SizedBox(width: padding?.right));
     return Row(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -76,7 +88,8 @@ class CBBackButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       child: Container(
-        padding: EdgeInsets.fromLTRB(5.dp, 0.dp, 0.dp, 0.dp),
+        color: Colors.transparent,
+        padding: EdgeInsets.fromLTRB(20.dp, 10.dp, 10.dp, 10.dp),
         child: ImageIcon(
           AssetImage('icon_black_back'.webP),
           color: color,
@@ -159,11 +172,13 @@ class CBScaffold extends StatelessWidget {
   final String? title;
   final List<Widget> leading;
   final List<Widget> actions;
+  final EdgeInsets? barPadding;
+  final double? iconMargin;
   final Widget? titleWidget;
   final Color? appBarColor;
   final PreferredSizeWidget? appBar;
   final Widget? bottomNavigationBar;
-  final WidgetBuilder? child;
+  final WidgetBuilder child;
   final Color bkgColor;
   final bool autoAdjustKeyboard;
   final EdgeInsets pagePadding;
@@ -174,16 +189,19 @@ class CBScaffold extends StatelessWidget {
   final PageStatus pageStatus;
   final WillPopCallback? onBackPress;
   final GlobalKey<ScaffoldState>? scaffoldKey;
+  final SystemUiOverlayStyle? systemOverlayStyle;
 
   const CBScaffold({
     Key? key,
     this.title,
-    this.leading = const [],
+    this.leading = const [CBBackButton()],
     this.actions = const [],
+    this.barPadding,
+    this.iconMargin,
     this.titleWidget,
     this.appBarColor,
     this.appBar,
-    this.child,
+    required this.child,
     this.bkgColor = Colors.white,
     this.autoAdjustKeyboard = false,
     this.pagePadding = EdgeInsets.zero,
@@ -195,36 +213,39 @@ class CBScaffold extends StatelessWidget {
     this.onBackPress,
     this.scaffoldKey,
     this.bottomNavigationBar,
+    this.systemOverlayStyle,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-        child: Scaffold(
-          key: scaffoldKey,
-          backgroundColor: bkgColor,
-          resizeToAvoidBottomInset: autoAdjustKeyboard,
-          floatingActionButtonLocation: floatingActionButtonLocation,
-          appBar: appBar ?? _appBar(),
-          bottomNavigationBar: bottomNavigationBar ?? null,
-          body: GestureDetector(
-              onTap: () {
-                FocusScope.of(context).requestFocus(FocusNode());
-              },
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  _contentDivider(),
-                  Expanded(
-                      child: Container(
+      child: Scaffold(
+        key: scaffoldKey,
+        backgroundColor: bkgColor,
+        resizeToAvoidBottomInset: autoAdjustKeyboard,
+        floatingActionButtonLocation: floatingActionButtonLocation,
+        appBar: appBar ?? _appBar(),
+        bottomNavigationBar: bottomNavigationBar ?? null,
+        body: GestureDetector(
+            onTap: () {
+              FocusScope.of(context).requestFocus(FocusNode());
+            },
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                _contentDivider(),
+                Expanded(
+                  child: Container(
                     padding: pagePadding,
                     child: _content(context),
-                  )),
-                ],
-              )),
-          floatingActionButton: floatingActionButton,
-        ),
-        onWillPop: onBackPress);
+                  ),
+                ),
+              ],
+            )),
+        floatingActionButton: floatingActionButton,
+      ),
+      onWillPop: onBackPress,
+    );
   }
 
   PreferredSizeWidget? _appBar() {
@@ -235,13 +256,14 @@ class CBScaffold extends StatelessWidget {
       automaticallyImplyLeading: false,
       titleSpacing: 0,
       title: CBTitleBar(
-          iconMargin: 10.dp,
-          title: titleWidget ??
-              titleBarTitleText(
-                title,
-              ),
-          leading: leading,
-          actions: actions),
+        padding: barPadding ?? EdgeInsets.only(right: 20.dp),
+        iconMargin: iconMargin ?? 10.dp,
+        title: titleWidget ?? titleBarTitleText(title),
+        leading: leading,
+        actions: actions,
+      ),
+      systemOverlayStyle: this.systemOverlayStyle ??
+          SystemUiOverlayStyle(statusBarColor: Colors.white),
     );
   }
 
@@ -266,10 +288,10 @@ class CBScaffold extends StatelessWidget {
   }
 
   Widget _dataContent(BuildContext context) {
-    if (!autoAdjustKeyboard) return child!(context);
+    if (!autoAdjustKeyboard) return child(context);
     return SingleChildScrollView(
       physics: ClampingScrollPhysics(),
-      child: child!(context),
+      child: child(context),
     );
   }
 }

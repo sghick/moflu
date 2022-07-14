@@ -24,6 +24,7 @@ Future<bool?> showCustomInputBasicDialog({
   List<TextSpan>? children,
   double contentRowSpacing = 1.5,
   String hintText = '',
+  String? initInputText,
   int maxLength = -1,
 }) async {
   context ??= navigatorContext;
@@ -49,6 +50,7 @@ Future<bool?> showCustomInputBasicDialog({
         contentTextAlign: contentTextAlign,
         contentRowSpacing: contentRowSpacing,
         hintText: hintText,
+        initInputText: initInputText,
         maxLength: maxLength,
         children: children,
       );
@@ -59,6 +61,7 @@ Future<bool?> showCustomInputBasicDialog({
 class CBInputDialogWidget extends CBCommonDialogWidget {
   final String? inputFormat;
   final String hintText;
+  final String? initInputText;
   final int maxLength;
 
   const CBInputDialogWidget({
@@ -85,6 +88,7 @@ class CBInputDialogWidget extends CBCommonDialogWidget {
     double contentRowSpacing = 1.5,
     this.inputFormat,
     this.hintText = '',
+    this.initInputText,
     this.maxLength = -1,
   }) : super(
           key: key,
@@ -123,6 +127,7 @@ class CBInputDialogState extends CBCommonDialogState<CBInputDialogWidget> {
   void initState() {
     super.initState();
     _editingController = TextEditingController();
+    _editingController.text = widget.initInputText ?? '';
   }
 
   @override

@@ -35,7 +35,7 @@ Widget underlineTextField(
       inputFormatters: formatterList,
       decoration: InputDecoration(
         hintText: hint,
-        hintStyle: newStyle.normanSize.lightGray.build,
+        hintStyle: newStyle.normalSize.lightGray.build,
         errorText: '',
         errorStyle: newStyle.smallSize.orange.height(1).build,
         enabledBorder: border,

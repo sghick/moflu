@@ -1,15 +1,12 @@
 import 'dart:io';
 
-import 'package:moflu/model/json/home.dart';
 import 'package:moflu/pages/home/object/option_manager.dart';
 import 'package:moflu/pages/home/views/doc_view.dart';
 import 'package:moflu/pages/home/views/file_view.dart';
 import 'package:moflu/pages/home/views/unknow_view.dart';
 import 'package:moflu/supports/widgets/dialogs/dialog_common_input_widget.dart';
-import 'package:moflu/model/sqlite/data_base.dart';
 import 'package:flutter/material.dart';
 import 'package:moflu/supports/widgets/scaffod.dart';
-import 'package:path_provider/path_provider.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -45,6 +42,7 @@ class _HomePageState extends State<HomePage> {
       onBackPress: () {
         return Future.value(false);
       },
+      leading: [],
       actions: [
         IconButton(
           onPressed: _onCreateDoc,

@@ -509,7 +509,7 @@
         <entry key="rego">
           <value>
             <list>
-              <option value="$USER_HOME$/.pub-cache/git/rego-ce356f19c9a1dde4031908f1b72ebbf9eee54ed0/lib" />
+              <option value="$USER_HOME$/.pub-cache/git/rego-418c1404d3bbb00d342176746656ff57d7f7ba47//lib" />
             </list>
           </value>
         </entry>
@@ -796,7 +796,7 @@
       </option>
     </properties>
     <CLASSES>
-      <root url="file://$USER_HOME$/.pub-cache/git/rego-ce356f19c9a1dde4031908f1b72ebbf9eee54ed0/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/git/rego-418c1404d3bbb00d342176746656ff57d7f7ba47//lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.flutter-io.cn/_fe_analyzer_shared-36.0.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.flutter-io.cn/analyzer-3.3.1/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.flutter-io.cn/args-2.3.0/lib" />

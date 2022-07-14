@@ -40,6 +40,8 @@ abstract class CBRootState<T extends StatefulWidget> extends State<T> {
 
   String? get advertPage => null;
 
+  String? get loginPage => null;
+
   String get homePage;
 
   @override
@@ -61,11 +63,13 @@ abstract class CBRootState<T extends StatefulWidget> extends State<T> {
     await goPrivatePage();
     await goSplashPage();
     await goAdvertPage();
+    await goLoginPage();
     return goHomePage();
   }
 
   Future goPrivatePage() {
-    if ((privatePage != null) && (privateVersion != sharedPref.privateVersion)) {
+    if ((privatePage != null) &&
+        (privateVersion != sharedPref.privateVersion)) {
       sharedPref.privateVersion = privateVersion;
       return goPageWithRoute(goPage(privatePage!, mode: RouteMode.CLEAR_TOP));
     }
@@ -73,7 +77,8 @@ abstract class CBRootState<T extends StatefulWidget> extends State<T> {
   }
 
   Future doPrivateDialogHandler() {
-    if ((privateDialogHandler != null) && (privateVersion != sharedPref.privateVersion)) {
+    if ((privateDialogHandler != null) &&
+        (privateVersion != sharedPref.privateVersion)) {
       sharedPref.privateVersion = privateVersion;
       return privateDialogHandler!();
     }
@@ -95,7 +100,14 @@ abstract class CBRootState<T extends StatefulWidget> extends State<T> {
     return Future.value();
   }
 
+  Future goLoginPage() {
+    if (loginPage != null) {
+      return goPageWithRoute(goPage(loginPage!, mode: RouteMode.CLEAR_TOP));
+    }
+    return Future.value();
+  }
+
   Future goHomePage() {
-    return goPageWithRoute(goPage(homePage, mode: RouteMode.CLEAR_TOP));
+    return goPage(homePage, mode: RouteMode.CLEAR_TOP);
   }
 }

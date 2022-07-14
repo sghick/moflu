@@ -2,8 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:moflu/model/json/home.dart';
-import 'package:moflu/model/sqlite/data_base.dart';
 import 'package:moflu/pages/home/object/option_manager.dart';
 import 'package:moflu/supports/styles/common_styles.dart';
 import 'package:moflu/supports/widgets/dialogs/dialog_common_wedgets.dart';

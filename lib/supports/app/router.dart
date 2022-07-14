@@ -9,7 +9,7 @@ Future<T?> goPageWithRoute<T>(
   Future<T?> goPage, {
   bool transFade = true,
 }) {
-  _transitionFade = transFade;
+  // _transitionFade = transFade;
   return goPage;
 }
 

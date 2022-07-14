@@ -13,17 +13,25 @@ class CBColors {
 
   static const Color orange = Color(0xffCE985B);
   static const Color bloody = Color(0xffFB940F);
+  static const Color yellow = Color(0xffFFEB3B);
 
   static const Color secondary = Color(0xffCE985B); //
   static const Color borderColor = Color(0xFFC3C3C3);
 
-  static const Color red = Color(0xffD12920);
+  static const Color red = Color(0xffFF5F5F);
   static const Color reminderRed = Color(0xFFEB3500);
+  static const Color pink = Color(0xffE91E63);
+
+  static const Color blue = Color(0xff00BFFF);
+
+  static const Color purple = Color(0xff9C27B0);
+
+  static const Color green = Color(0xff00CB7C);
 
   static const Color line = Color(0xffEBEBEB);
   static const Color line2 = Color(0xffdBdBdB);
   static const Color mainLine = Color(0xffF5F5F5);
-  static const Color shawlowBg = Color(0xEEFBFBFB);
+  static const Color shadowBg = Color(0xEEFBFBFB);
   static const Color backgroundColor = Color(0xffF7F7F7);
   static const Color loginBgColor = Color(0xffFAFAFA);
 

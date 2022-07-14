@@ -208,7 +208,7 @@ class CBCommonDialogState<DialogWidget extends CBCommonDialogWidget>
       padding: EdgeInsets.only(left: 40.dp, right: 40.dp),
       alignment: Alignment.topCenter,
       decoration: BoxDecoration(
-        color: Colors.purple,
+        color: Colors.blue,
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(6.dp),
           topRight: Radius.circular(6.dp),
@@ -252,7 +252,7 @@ class CBCommonDialogState<DialogWidget extends CBCommonDialogWidget>
     return RichText(
       textAlign: widget.contentTextAlign,
       text: TextSpan(
-        text: getText(widget.content),
+        text: widget.content ?? '',
         style: TextStyle(
           fontSize: TextSize.large,
           color: Colors.black,
@@ -272,18 +272,12 @@ class CBCommonDialogState<DialogWidget extends CBCommonDialogWidget>
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Visibility(
-              visible: widget.isShowConfirmBtn,
-              child: buildRightButton(),
-            ),
-          ],
-        ),
-        CBSpace.v(10.dp),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Visibility(
               visible: widget.isShowCancelBtn,
               child: buildLeftButton(),
+            ),
+            Visibility(
+              visible: widget.isShowConfirmBtn,
+              child: buildRightButton(),
             ),
           ],
         ),
@@ -298,16 +292,16 @@ class CBCommonDialogState<DialogWidget extends CBCommonDialogWidget>
         cancelDialog();
       },
       child: Container(
-        width: 180.dp,
+        width: 120.dp,
         height: 40.dp,
         decoration: BoxDecoration(
           color: widget.cancelBgColor,
-          borderRadius: BorderRadius.all(Radius.circular(8.dp)),
+          borderRadius: BorderRadius.all(Radius.circular(10.dp)),
         ),
         alignment: Alignment.center,
         child: SimpleText(
           widget.cancelContent,
-          style: newStyle.normanSize.color(widget.cancelTextColor),
+          style: newStyle.normalSize.color(widget.cancelTextColor),
         ),
       ),
     );
@@ -319,17 +313,17 @@ class CBCommonDialogState<DialogWidget extends CBCommonDialogWidget>
         confirmDialog();
       },
       child: Container(
-        width: 180.dp,
+        width: 120.dp,
         height: 40.dp,
         decoration: BoxDecoration(
           color: widget.confirmBgColor,
-          borderRadius: BorderRadius.all(Radius.circular(8.dp)),
+          borderRadius: BorderRadius.all(Radius.circular(10.dp)),
         ),
         alignment: Alignment.center,
         // color: widget.confirmBgColor,
         child: SimpleText(
           widget.confirmContent,
-          style: newStyle.normanSize.color(widget.confirmTextColor),
+          style: newStyle.normalSize.color(widget.confirmTextColor),
         ),
       ),
     );

@@ -1,0 +1,3 @@
+extension CBStringExt on String {
+
+}

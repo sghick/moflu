@@ -43,7 +43,7 @@ extension TextStyleBuilderExtension on TextStyleBuilder {
     return size(TextSize.standard);
   }
 
-  TextStyleBuilder get normanSize {
+  TextStyleBuilder get normalSize {
     return size(TextSize.normal);
   }
 
@@ -86,6 +86,34 @@ extension TextStyleBuilderExtension on TextStyleBuilder {
 
   TextStyleBuilder get bloody {
     return color(CBColors.bloody);
+  }
+
+  TextStyleBuilder get yellow {
+    return color(CBColors.yellow);
+  }
+
+  TextStyleBuilder get red {
+    return color(CBColors.red);
+  }
+
+  TextStyleBuilder get pink {
+    return color(CBColors.pink);
+  }
+
+  TextStyleBuilder get reminderRed {
+    return color(CBColors.reminderRed);
+  }
+
+  TextStyleBuilder get blue {
+    return color(CBColors.blue);
+  }
+
+  TextStyleBuilder get purple {
+    return color(CBColors.purple);
+  }
+
+  TextStyleBuilder get green {
+    return color(CBColors.green);
   }
 }
 

@@ -13,6 +13,7 @@ class CBCard extends Container {
     DecorationImage? bgkImg,
     Widget? child,
     GestureTapCallback? onTap,
+    GestureLongPressCallback? onLongPress,
   }) : super(
     margin: margin,
     padding: padding,
@@ -37,6 +38,7 @@ class CBCard extends Container {
         child: child,
       ),
       onTap: onTap,
+      onLongPress: onLongPress,
     ),
   );
 }
